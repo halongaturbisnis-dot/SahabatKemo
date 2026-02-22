@@ -11,7 +11,19 @@ export const ASSETS = {
   SPREADSHEET_ID: "1hkAdTSQduupE5dgpKnORRU9lTvVC-okIdPAmGcTwkaU",
 };
 
-export const KEMO_SCORING = [
+export interface ScoringItem {
+  kategori: string;
+  kriteria: string;
+  skor: number;
+}
+
+export interface InterpretationItem {
+  kategori: string;
+  skorRange: [number, number];
+  rekomendasi: string;
+}
+
+export const KEMO_SCORING: ScoringItem[] = [
   { kategori: "Mual dan Muntah", kriteria: "Mual", skor: 1 },
   { kategori: "Mual dan Muntah", kriteria: "Muntah kurang dari 3 kali sehari", skor: 1 },
   { kategori: "Mual dan Muntah", kriteria: "Muntah 3-5 kali sehari", skor: 2 },
@@ -41,24 +53,24 @@ export const KEMO_SCORING = [
   { kategori: "Sesak Napas", kriteria: "Mengganggu tidur", skor: 1 },
 ];
 
-export const KEMO_INTERPRETATION = [
-  { kategori: "Mual dan Muntah", skorRange: [3, 3], rekomendasi: "Periksa ke puskesmas terdekat" },
+export const KEMO_INTERPRETATION: InterpretationItem[] = [
+  { kategori: "Mual dan Muntah", skorRange: [1, 2], rekomendasi: "Periksa ke puskesmas terdekat" },
   { kategori: "Mual dan Muntah", skorRange: [3, 4], rekomendasi: "Periksa ke spesialis penyakit dalam" },
-  { kategori: "Mual dan Muntah", skorRange: [5, 5], rekomendasi: "Periksa ke SPPD KHOM" },
-  { kategori: "Diare", skorRange: [2, 2], rekomendasi: "Periksa ke dokter umum/puskesmas" },
-  { kategori: "Diare", skorRange: [4, 4], rekomendasi: "Periksa ke spesialis penyakit dalam" },
+  { kategori: "Mual dan Muntah", skorRange: [5, 10], rekomendasi: "Periksa ke SPPD KHOM" },
+  { kategori: "Diare", skorRange: [1, 2], rekomendasi: "Periksa ke dokter umum/puskesmas" },
+  { kategori: "Diare", skorRange: [3, 4], rekomendasi: "Periksa ke spesialis penyakit dalam" },
   { kategori: "Nyeri", skorRange: [4, 16], rekomendasi: "Periksa ke spesialis penyakit dalam" },
   { kategori: "Nyeri", skorRange: [7, 18], rekomendasi: "Periksa ke konsultan hematologi onkologi medik" },
-  { kategori: "Mukositis", skorRange: [3, 3], rekomendasi: "Periksa ke dokter umum/puskesmas" },
+  { kategori: "Mukositis", skorRange: [1, 3], rekomendasi: "Periksa ke dokter umum/puskesmas" },
   { kategori: "Mukositis", skorRange: [4, 6], rekomendasi: "Periksa ke spesialis penyakit dalam" },
-  { kategori: "Mukositis", skorRange: [7, 7], rekomendasi: "Periksa ke konsultan hematologi onkologi medik" },
+  { kategori: "Mukositis", skorRange: [7, 10], rekomendasi: "Periksa ke konsultan hematologi onkologi medik" },
   { kategori: "Leukopenia", skorRange: [2, 5], rekomendasi: "Periksa ke dokter umum/puskesmas" },
   { kategori: "Leukopenia", skorRange: [6, 9], rekomendasi: "Periksa ke spesialis penyakit dalam" },
   { kategori: "Leukopenia", skorRange: [10, 11], rekomendasi: "Periksa ke konsultan hematologi onkologi medik" },
-  { kategori: "Pucat", skorRange: [2, 2], rekomendasi: "Periksa ke spesialis penyakit dalam" },
-  { kategori: "Sesak Napas", skorRange: [2, 2], rekomendasi: "Periksa ke dokter umum/puskesmas" },
+  { kategori: "Pucat", skorRange: [1, 2], rekomendasi: "Periksa ke spesialis penyakit dalam" },
+  { kategori: "Sesak Napas", skorRange: [1, 2], rekomendasi: "Periksa ke dokter umum/puskesmas" },
   { kategori: "Sesak Napas", skorRange: [3, 5], rekomendasi: "Periksa ke spesialis penyakit dalam" },
-  { kategori: "Sesak Napas", skorRange: [6, 6], rekomendasi: "Periksa ke konsultan hematologi onkologi medik" },
+  { kategori: "Sesak Napas", skorRange: [6, 10], rekomendasi: "Periksa ke konsultan hematologi onkologi medik" },
 ];
 
 export const COLORS = {

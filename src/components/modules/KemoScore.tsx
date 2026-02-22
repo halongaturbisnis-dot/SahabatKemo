@@ -1,17 +1,51 @@
-import React, { useState, useMemo } from 'react';
-import { KEMO_SCORING, KEMO_INTERPRETATION } from '@/src/assets';
+import React, { useState, useMemo, useEffect } from 'react';
+import { 
+  KEMO_SCORING as FALLBACK_SCORING, 
+  KEMO_INTERPRETATION as FALLBACK_INTERPRETATION,
+  ScoringItem,
+  InterpretationItem
+} from '@/src/assets';
+import { getScoringData, getInterpretationData } from '@/src/services/googleSheets';
 import { motion } from 'motion/react';
-import { Activity, AlertCircle, CheckCircle2, Info } from 'lucide-react';
+import { Activity, AlertCircle, CheckCircle2, Info, RefreshCw, Loader2 } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 
 export const KemoScore: React.FC = () => {
   const [selectedSymptoms, setSelectedSymptoms] = useState<Set<number>>(new Set());
+  const [scoringData, setScoringData] = useState<ScoringItem[]>(FALLBACK_SCORING);
+  const [interpretationData, setInterpretationData] = useState<InterpretationItem[]>(FALLBACK_INTERPRETATION);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const fetchData = async (silent = false) => {
+    if (!silent) setIsLoading(true);
+    else setIsRefreshing(true);
+    
+    try {
+      const [sData, iData] = await Promise.all([
+        getScoringData(),
+        getInterpretationData()
+      ]);
+      
+      if (sData.length > 0) setScoringData(sData);
+      if (iData.length > 0) setInterpretationData(iData);
+    } catch (error) {
+      console.error('Failed to sync with spreadsheet:', error);
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const categories = useMemo(() => {
     const cats = new Set<string>();
-    KEMO_SCORING.forEach(item => cats.add(item.kategori));
+    scoringData.forEach(item => cats.add(item.kategori));
     return Array.from(cats);
-  }, []);
+  }, [scoringData]);
 
   const toggleSymptom = (index: number) => {
     const newSelected = new Set(selectedSymptoms);
@@ -28,12 +62,14 @@ export const KemoScore: React.FC = () => {
     categories.forEach(cat => scores[cat] = 0);
     
     selectedSymptoms.forEach(index => {
-      const item = KEMO_SCORING[index];
-      scores[item.kategori] += item.skor;
+      const item = scoringData[index];
+      if (item) {
+        scores[item.kategori] += item.skor;
+      }
     });
     
     return scores;
-  }, [selectedSymptoms, categories]);
+  }, [selectedSymptoms, categories, scoringData]);
 
   const recommendations = useMemo(() => {
     const recs: { kategori: string; rekomendasi: string; skor: number }[] = [];
@@ -42,7 +78,7 @@ export const KemoScore: React.FC = () => {
       if (score === 0) return;
       
       // Find all matching interpretations for this category and score
-      const matching = KEMO_INTERPRETATION.filter(interp => 
+      const matching = interpretationData.filter(interp => 
         interp.kategori === cat && 
         score >= interp.skorRange[0] && 
         score <= interp.skorRange[1]
@@ -59,12 +95,31 @@ export const KemoScore: React.FC = () => {
     });
     
     return recs;
-  }, [scoresByCategory]);
+  }, [scoresByCategory, interpretationData]);
+
+  if (isLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-10 w-10 animate-spin text-[#9E1B9E]" />
+          <p className="text-neutral-500 font-medium">Memuat data skoring...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 overflow-y-auto p-6 bg-neutral-50">
       <div className="max-w-4xl mx-auto space-y-8">
-        <header className="text-center space-y-2">
+        <header className="text-center space-y-2 relative">
+          <button 
+            onClick={() => fetchData(true)}
+            disabled={isRefreshing}
+            className="absolute right-0 top-0 p-2 text-neutral-400 hover:text-[#9E1B9E] transition-colors disabled:opacity-50"
+            title="Sinkronisasi dengan Spreadsheet"
+          >
+            <RefreshCw size={20} className={cn(isRefreshing && "animate-spin")} />
+          </button>
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#9E1B9E]/10 text-[#9E1B9E] mb-2">
             <Activity size={24} />
           </div>
@@ -83,9 +138,9 @@ export const KemoScore: React.FC = () => {
                   <h3 className="font-semibold text-sm text-[#9E1B9E] uppercase tracking-wider">{cat}</h3>
                 </div>
                 <div className="p-2 space-y-1">
-                  {KEMO_SCORING.filter(item => item.kategori === cat).map((item, idx) => {
-                    // Find original index in KEMO_SCORING
-                    const originalIdx = KEMO_SCORING.findIndex(s => s.kriteria === item.kriteria && s.kategori === item.kategori);
+                  {scoringData.filter(item => item.kategori === cat).map((item, idx) => {
+                    // Find original index in scoringData
+                    const originalIdx = scoringData.findIndex(s => s.kriteria === item.kriteria && s.kategori === item.kategori);
                     const isSelected = selectedSymptoms.has(originalIdx);
                     
                     return (

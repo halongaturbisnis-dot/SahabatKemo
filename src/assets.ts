@@ -23,6 +23,16 @@ export interface InterpretationItem {
   rekomendasi: string;
 }
 
+export interface NewsItem {
+  id: string;
+  title: string;
+  content: string;
+  thumbnail: string;
+  author: string;
+  date: string;
+  status: 'draft' | 'published';
+}
+
 export const KEMO_SCORING: ScoringItem[] = [
   { kategori: "Mual dan Muntah", kriteria: "Mual", skor: 1 },
   { kategori: "Mual dan Muntah", kriteria: "Muntah kurang dari 3 kali sehari", skor: 1 },

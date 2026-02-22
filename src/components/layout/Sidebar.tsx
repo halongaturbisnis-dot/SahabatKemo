@@ -29,7 +29,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isAdm
     { id: 'kemo-score', label: 'Kemo Score', icon: Activity },
     { id: 'cerita-konco', label: 'Cerita Konco', icon: MessageSquare },
     { id: 'konco-dokter', label: 'Konco Dokter', icon: Stethoscope },
-    { id: 'admin', label: 'Admin', icon: ShieldCheck },
   ];
 
   return (

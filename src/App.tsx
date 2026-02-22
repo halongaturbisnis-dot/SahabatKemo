@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Sidebar } from './components/layout/Sidebar';
 import { LandingPage } from './components/modules/LandingPage';
 import { KemoScore } from './components/modules/KemoScore';
+import { News } from './components/modules/News';
 import { Login } from './components/modules/Login';
 import { LoadingOverlay } from './components/ui/LoadingOverlay';
+import { cn } from '@/src/lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
+import { Shield, LogIn } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 export default function App() {
@@ -18,6 +21,7 @@ export default function App() {
     setAdminData(data);
     setIsAdmin(true);
     setShowLogin(false);
+    setActiveTab('admin');
   };
 
   const handleLogout = () => {
@@ -35,28 +39,7 @@ export default function App() {
   };
 
   const handleTabChange = (tab: string) => {
-    if (tab === 'admin' && !isAdmin) {
-      setShowLogin(true);
-    } else {
-      setActiveTab(tab);
-    }
-  };
-
-  // Example of manual save trigger
-  const handleManualSave = async () => {
-    setIsSaving(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsSaving(false);
-    
-    Swal.fire({
-      title: 'Berhasil!',
-      text: 'Data telah disimpan dengan aman.',
-      icon: 'success',
-      confirmButtonColor: '#9E1B9E',
-      timer: 2000,
-      showConfirmButton: false
-    });
+    setActiveTab(tab);
   };
 
   return (
@@ -75,23 +58,35 @@ export default function App() {
             <h2 className="text-lg font-semibold capitalize">
               {activeTab === 'beranda' ? 'Beranda' : activeTab.replace('-', ' ')}
             </h2>
-            {isAdmin && adminData && (
-              <div className="flex items-center gap-2 px-3 py-1 bg-[#9E1B9E]/10 rounded-full border border-[#9E1B9E]/20">
-                <div className="w-2 h-2 rounded-full bg-[#9E1B9E] animate-pulse" />
-                <span className="text-xs font-bold text-[#9E1B9E]">{adminData.nama}</span>
-              </div>
-            )}
           </div>
+          
           <div className="flex items-center gap-4">
-            <button 
-              onClick={handleManualSave}
-              className="bg-[#9E1B9E] text-white px-4 py-1.5 rounded-md text-sm font-medium hover:bg-[#821682] transition-colors shadow-sm"
-            >
-              Simpan Manual
-            </button>
-            <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center overflow-hidden">
-              <img src="https://picsum.photos/seed/user/32/32" alt="User" />
-            </div>
+            {isAdmin && adminData ? (
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-[#9E1B9E]/10 rounded-full border border-[#9E1B9E]/20">
+                  <div className="w-2 h-2 rounded-full bg-[#9E1B9E] animate-pulse" />
+                  <span className="text-xs font-bold text-[#9E1B9E]">{adminData.nama}</span>
+                </div>
+                <button 
+                  onClick={() => setActiveTab('admin')}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm font-bold transition-all",
+                    activeTab === 'admin' 
+                      ? "bg-[#9E1B9E] text-white shadow-lg shadow-[#9E1B9E]/20" 
+                      : "text-neutral-600 hover:bg-neutral-100"
+                  )}
+                >
+                  <Shield size={16} /> Admin
+                </button>
+              </div>
+            ) : (
+              <button 
+                onClick={() => setShowLogin(true)}
+                className="flex items-center gap-2 px-4 py-1.5 text-neutral-600 hover:text-[#9E1B9E] hover:bg-[#9E1B9E]/5 rounded-lg text-sm font-bold transition-all"
+              >
+                <LogIn size={16} /> Login Admin
+              </button>
+            )}
           </div>
         </header>
 
@@ -107,8 +102,9 @@ export default function App() {
               className="flex-1 flex flex-col overflow-hidden"
             >
               {activeTab === 'beranda' && <LandingPage />}
+              {activeTab === 'berita' && <News isAdmin={isAdmin} adminName={adminData?.nama} />}
               {activeTab === 'kemo-score' && <KemoScore />}
-              {activeTab !== 'beranda' && activeTab !== 'kemo-score' && (
+              {activeTab !== 'beranda' && activeTab !== 'berita' && activeTab !== 'kemo-score' && (
                 <div className="p-8 flex flex-col items-center justify-center h-full text-neutral-500">
                   <p className="text-xl">Modul {activeTab.replace('-', ' ')} sedang dalam pengembangan.</p>
                 </div>

@@ -1,0 +1,5 @@
+{
+  "name": "SahabatKemo",
+  "description": "Aplikasi pendamping pasien kemoterapi dengan integrasi Google Drive dan Supabase.",
+  "requestFramePermissions": []
+}

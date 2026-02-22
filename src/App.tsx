@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from './components/layout/Sidebar';
 import { LandingPage } from './components/modules/LandingPage';
+import { KemoScore } from './components/modules/KemoScore';
 import { LoadingOverlay } from './components/ui/LoadingOverlay';
 import { motion, AnimatePresence } from 'motion/react';
 import Swal from 'sweetalert2';
@@ -69,7 +70,8 @@ export default function App() {
               className="flex-1 flex flex-col overflow-hidden"
             >
               {activeTab === 'beranda' && <LandingPage />}
-              {activeTab !== 'beranda' && (
+              {activeTab === 'kemo-score' && <KemoScore />}
+              {activeTab !== 'beranda' && activeTab !== 'kemo-score' && (
                 <div className="p-8 flex flex-col items-center justify-center h-full text-neutral-500">
                   <p className="text-xl">Modul {activeTab.replace('-', ' ')} sedang dalam pengembangan.</p>
                 </div>

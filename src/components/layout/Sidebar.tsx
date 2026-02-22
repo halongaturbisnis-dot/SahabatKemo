@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { 
   Home, 
   Newspaper, 
-  User, 
-  Settings, 
+  Activity, 
+  MessageSquare, 
+  Stethoscope, 
+  ShieldCheck,
   ChevronLeft, 
   ChevronRight,
-  LogOut,
-  LayoutDashboard
+  LogOut
 } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 import { BRAND, COLORS } from '@/src/assets';
@@ -15,17 +16,19 @@ import { BRAND, COLORS } from '@/src/assets';
 interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  isAdmin?: boolean;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isAdmin = false }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const menuItems = [
-    { id: 'landing', label: 'Beranda', icon: Home },
-    { id: 'news', label: 'Berita Terkini', icon: Newspaper },
-    { id: 'profile', label: 'Profil Ideator', icon: User },
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'settings', label: 'Pengaturan', icon: Settings },
+    { id: 'beranda', label: 'Beranda', icon: Home },
+    { id: 'berita', label: 'Berita', icon: Newspaper },
+    { id: 'kemo-score', label: 'Kemo Score', icon: Activity },
+    { id: 'cerita-konco', label: 'Cerita Konco', icon: MessageSquare },
+    { id: 'konco-dokter', label: 'Konco Dokter', icon: Stethoscope },
+    { id: 'admin', label: 'Admin', icon: ShieldCheck },
   ];
 
   return (
@@ -67,12 +70,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
         ))}
       </nav>
 
-      <div className="border-t border-neutral-100 p-2">
-        <button className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
-          <LogOut size={20} />
-          {!isCollapsed && <span>Keluar</span>}
-        </button>
-      </div>
+      {isAdmin && (
+        <div className="border-t border-neutral-100 p-2">
+          <button className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
+            <LogOut size={20} />
+            {!isCollapsed && <span>Keluar</span>}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

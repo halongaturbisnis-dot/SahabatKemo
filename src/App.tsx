@@ -6,8 +6,9 @@ import { motion, AnimatePresence } from 'motion/react';
 import Swal from 'sweetalert2';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('landing');
+  const [activeTab, setActiveTab] = useState('beranda');
   const [isSaving, setIsSaving] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Example of manual save trigger
   const handleManualSave = async () => {
@@ -28,15 +29,22 @@ export default function App() {
 
   return (
     <div className="flex h-screen w-full bg-white font-sans text-neutral-900 overflow-hidden">
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isAdmin={isAdmin} />
       
       <main className="flex-1 flex flex-col relative overflow-hidden">
         {/* Header / Top Bar */}
         <header className="h-16 border-b border-neutral-100 flex items-center justify-between px-6 bg-white z-10">
           <h2 className="text-lg font-semibold capitalize">
-            {activeTab === 'landing' ? 'Beranda' : activeTab}
+            {activeTab === 'beranda' ? 'Beranda' : activeTab.replace('-', ' ')}
           </h2>
           <div className="flex items-center gap-4">
+            {/* Hidden toggle for demo purposes - in real app this would be auth logic */}
+            <button 
+              onClick={() => setIsAdmin(!isAdmin)}
+              className="text-[10px] text-neutral-300 hover:text-neutral-500"
+            >
+              {isAdmin ? 'Admin Mode' : 'User Mode'}
+            </button>
             <button 
               onClick={handleManualSave}
               className="bg-[#9E1B9E] text-white px-4 py-1.5 rounded-md text-sm font-medium hover:bg-[#821682] transition-colors shadow-sm"
@@ -60,10 +68,10 @@ export default function App() {
               transition={{ duration: 0.2 }}
               className="flex-1 flex flex-col overflow-hidden"
             >
-              {activeTab === 'landing' && <LandingPage />}
-              {activeTab !== 'landing' && (
+              {activeTab === 'beranda' && <LandingPage />}
+              {activeTab !== 'beranda' && (
                 <div className="p-8 flex flex-col items-center justify-center h-full text-neutral-500">
-                  <p className="text-xl">Modul {activeTab} sedang dalam pengembangan.</p>
+                  <p className="text-xl">Modul {activeTab.replace('-', ' ')} sedang dalam pengembangan.</p>
                 </div>
               )}
             </motion.div>

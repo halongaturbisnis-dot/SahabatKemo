@@ -17,9 +17,10 @@ interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   isAdmin?: boolean;
+  onLogout?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isAdmin = false }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isAdmin = false, onLogout }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const menuItems = [
@@ -72,7 +73,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isAdm
 
       {isAdmin && (
         <div className="border-t border-neutral-100 p-2">
-          <button className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
+          <button 
+            onClick={onLogout}
+            className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+          >
             <LogOut size={20} />
             {!isCollapsed && <span>Keluar</span>}
           </button>
